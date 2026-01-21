@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { Link, useParams } from "react-router-dom";
@@ -15,10 +15,18 @@ const Post = ({ post }) => {
 	const [showComments, setShowComments] = useState(false);
 	const [newComment, setNewComment] = useState("");
 	const [comments, setComments] = useState(post.comments || []);
+	const [likesCount, setLikesCount] = useState(post.likes.length);
+	const [isLiked, setIsLiked] = useState(post.likes.includes(authUser._id));
 	const isOwner = authUser._id === post.author._id;
-	const isLiked = post.likes.includes(authUser._id);
 
 	const queryClient = useQueryClient();
+
+	// Sync state when post prop changes (e.g., after refetch)
+	useEffect(() => {
+		setLikesCount(post.likes.length);
+		setIsLiked(post.likes.includes(authUser._id));
+		setComments(post.comments || []);
+	}, [post.likes, post.comments, authUser._id]);
 
 	const { mutate: deletePost, isPending: isDeletingPost } = useMutation({
 		mutationFn: async () => {
@@ -56,14 +64,17 @@ const Post = ({ post }) => {
 		},
 	});
 
+	const handleLikePost = async () => {
+		if (isLikingPost) return;
+		// Optimistically update UI before API call
+		setIsLiked(!isLiked);
+		setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
+		likePost();
+	};
+
 	const handleDeletePost = () => {
 		if (!window.confirm("Are you sure you want to delete this post?")) return;
 		deletePost();
-	};
-
-	const handleLikePost = async () => {
-		if (isLikingPost) return;
-		likePost();
 	};
 
 	const handleAddComment = async (e) => {
@@ -121,7 +132,7 @@ const Post = ({ post }) => {
 				<div className='flex justify-between text-info'>
 					<PostAction
 						icon={<ThumbsUp size={18} className={isLiked ? "text-blue-500  fill-blue-300" : ""} />}
-						text={`Like (${post.likes.length})`}
+						text={`Like (${likesCount})`}
 						onClick={handleLikePost}
 					/>
 

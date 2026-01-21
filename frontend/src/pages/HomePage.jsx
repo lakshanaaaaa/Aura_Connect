@@ -22,6 +22,7 @@ const HomePage = () => {
 			const res = await axiosInstance.get("/posts");
 			return res.data;
 		},
+		refetchInterval: 30000, // Refetch every 30 seconds
 	});
 	return (
 		<>

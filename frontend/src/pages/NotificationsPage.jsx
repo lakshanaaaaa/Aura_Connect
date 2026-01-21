@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../lib/axios";
 import { toast } from "react-hot-toast";
+import React from "react";
 import {
 	ExternalLink,
 	Eye,
@@ -37,6 +38,35 @@ const NotificationsPage = () => {
 			toast.success("Notification deleted");
 		},
 	});
+
+	// Mark all notifications as read when viewing the page
+	const { mutate: markAllAsRead } = useMutation({
+		mutationFn: async () => {
+			const unreadNotifications = notifications?.data?.filter(n => !n.read) || [];
+			await Promise.all(
+				unreadNotifications.map(notification => 
+					axiosInstance.put(`/notifications/${notification._id}/read`)
+				)
+			);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries(["notifications"]);
+		},
+	});
+
+	// Auto-mark all as read when notifications load
+	React.useEffect(() => {
+		if (notifications?.data?.length > 0) {
+			const hasUnread = notifications.data.some(n => !n.read);
+			if (hasUnread) {
+				// Small delay to let user see the notifications first
+				const timer = setTimeout(() => {
+					markAllAsRead();
+				}, 1000);
+				return () => clearTimeout(timer);
+			}
+		}
+	}, [notifications?.data]);
 
 	const renderNotificationIcon = (type) => {
 		switch (type) {
