@@ -20,7 +20,7 @@ A professional networking platform inspired by LinkedIn, built with the MERN sta
 *Real-time notification system for likes, comments, and connection requests*
 
 ### Social Feed
-![Social Feed](./screenshots/feed.png)
+![Social Feed](./screenshots/feeds.png)
 
 *Engage with your network through posts, likes, and comments*
 
