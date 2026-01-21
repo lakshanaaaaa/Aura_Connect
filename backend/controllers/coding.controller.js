@@ -4,6 +4,13 @@ import User from "../models/user.model.js";
 
 export const contestData = async (req, res) => {
 	try {
+		// Check if CLIST API credentials are configured
+		if (!process.env.CLIST_BASE_URL || !process.env.CLIST_USERNAME || !process.env.CLIST_API_KEY) {
+			return res.status(500).json({ 
+				message: "CLIST API credentials not configured. Please add CLIST_BASE_URL, CLIST_USERNAME, and CLIST_API_KEY to your .env file." 
+			});
+		}
+
 		const contest = await axios.get(
 			process.env.CLIST_BASE_URL +
 				"/contest?with_problems=false&upcoming=true&format_time=true",
@@ -29,7 +36,8 @@ export const contestData = async (req, res) => {
 			data: data,
 		});
 	} catch (err) {
-		res.status(400).json({ message: err.message });
+		console.error("Contest API Error:", err.message);
+		res.status(400).json({ message: err.response?.data?.detail || err.message || "Failed to fetch contests" });
 	}
 };
 

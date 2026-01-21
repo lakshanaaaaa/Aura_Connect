@@ -24,6 +24,7 @@ const CalendarComponent = () => {
 		queryKey: ["contest"],
 		queryFn: () => axiosInstance.get("/coding/contest"),
 		select: (response) => response.data,
+		retry: 1,
 	});
 
 	const { mutate: addContest, isPending: isLoadingContest } = useMutation({
@@ -36,10 +37,11 @@ const CalendarComponent = () => {
 		onSuccess: (data) => {
 			toast.success(data?.message || "Contest added successfully");
 			queryClient.invalidateQueries({ queryKey: ["wishlistcontest"] });
+			queryClient.invalidateQueries({ queryKey: ["contest"] });
 		},
 		onError: (err) => {
-			console.error("Error response:", err.message); // Debugging: log error structure
-			toast.error(err.message || "Failed to add contest"); // Access error message correctly
+			console.error("Error response:", err.message);
+			toast.error(err.response?.data?.message || err.message || "Failed to add contest");
 		},
 	});
 
@@ -57,10 +59,21 @@ const CalendarComponent = () => {
 
 	if (error || UserError)
 		return (
-			<div className="text-center text-red-500">Error: {error.message}</div>
+			<div className="flex flex-col items-center justify-center h-screen">
+				<div className="text-center text-red-500 mb-4">
+					<p className="text-xl font-semibold">Error loading contests</p>
+					<p className="text-sm mt-2">{error?.response?.data?.message || error?.message || "Failed to fetch contest data"}</p>
+				</div>
+				<div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 max-w-md">
+					<p className="text-sm text-gray-700">
+						<strong>Note:</strong> Contest calendar requires CLIST API credentials. 
+						Please configure CLIST_BASE_URL, CLIST_USERNAME, and CLIST_API_KEY in your .env file.
+					</p>
+				</div>
+			</div>
 		);
 
-	const events = data.data.map((contest) => ({
+	const events = data?.data?.map((contest) => ({
 		title: contest.event,
 		start: new Date(moment(contest.start, "DD.MM ddd HH:mm")),
 		end: new Date(moment(contest.end, "DD.MM ddd HH:mm")),
@@ -70,7 +83,7 @@ const CalendarComponent = () => {
 		host: contest.host,
 		resource: contest.resource,
 		href: contest.href,
-	}));
+	})) || [];
 
 	const handleSelectEvent = (event) => {
 		setSelectedEvent(event);
