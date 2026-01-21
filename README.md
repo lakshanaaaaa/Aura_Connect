@@ -5,7 +5,7 @@ A professional networking platform inspired by LinkedIn, built with the MERN sta
 ## Screenshots
 
 ### User Profile
-![User Profile](./frontend/public/screenshot-for-readme.png)
+![User Profile](./screenshots/feed.png)
 
 *Professional profile page with customizable sections for experience, education, and skills*
 
