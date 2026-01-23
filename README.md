@@ -87,98 +87,41 @@ A professional networking platform inspired by LinkedIn, built with the MERN sta
 - **Lucide React** - Icon library
 - **React Hot Toast** - Toast notifications
 
-## Installation
+## Project Architecture
 
-### Prerequisites
-- Node.js (v14 or higher)
-- MongoDB Atlas account or local MongoDB
-- Cloudinary account
-- CLIST API account (for contest calendar)
+### System Design
+- **RESTful API** architecture for backend services
+- **Component-based** frontend with React
+- **JWT-based** authentication and authorization
+- **Real-time updates** with polling mechanism
+- **Optimistic UI** updates for better user experience
 
-### Setup
+### Database Schema
+- **Users** - Profile information, connections, and authentication
+- **Posts** - Content, images, likes, and comments
+- **Notifications** - User activity tracking
+- **Connection Requests** - Network relationship management
+- **Contests** - Coding competition data and user wishlists
 
-1. Clone the repository
-```bash
-git clone https://github.com/lakshanaaaaa/Aura_Connect.git
-cd Aura_Connect
-```
+### Key Features Implementation
 
-2. Install dependencies
-```bash
-npm install
-cd frontend
-npm install
-cd ..
-```
+#### Authentication Flow
+- Secure password hashing with bcryptjs
+- JWT token generation and validation
+- Cookie-based session management
+- Protected API routes with middleware
 
-3. Configure environment variables
+#### Social Features
+- Post creation with image upload to Cloudinary
+- Like/unlike with optimistic UI updates
+- Nested comments system
+- Real-time notification system
 
-Create a `.env` file in the root directory:
-
-```env
-# MongoDB Configuration
-MONGO_URI=your_mongodb_connection_string
-
-# JWT Configuration
-JWT_SECRET=your_jwt_secret_key
-
-# Server Configuration
-PORT=5000
-NODE_ENV=development
-
-# Cloudinary Configuration
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-
-# Mailtrap Configuration
-MAILTRAP_HOST=sandbox.smtp.mailtrap.io
-MAILTRAP_PORT=2525
-MAILTRAP_USER=your_mailtrap_user
-MAILTRAP_PASS=your_mailtrap_password
-
-# CLIST API Configuration
-CLIST_BASE_URL=https://clist.by/api/v4
-CLIST_USERNAME=your_clist_username
-CLIST_API_KEY=your_clist_api_key
-```
-
-4. Run the application
-
-Development mode (runs both frontend and backend):
-```bash
-# Terminal 1 - Backend
-npm run dev
-
-# Terminal 2 - Frontend
-cd frontend
-npm run dev
-```
-
-5. Access the application
-- Frontend: http://localhost:5173 (or the port shown in terminal)
-- Backend: http://localhost:5000
-
-## Project Structure
-
-```
-Aura_Connect/
-├── backend/
-│   ├── controllers/      # Request handlers
-│   ├── models/          # MongoDB schemas
-│   ├── routes/          # API routes
-│   ├── middleware/      # Auth middleware
-│   ├── lib/            # Utility functions (DB, Cloudinary)
-│   └── server.js       # Express server setup
-├── frontend/
-│   ├── src/
-│   │   ├── components/  # Reusable React components
-│   │   ├── pages/      # Page components
-│   │   ├── lib/        # Axios instance and utilities
-│   │   └── utils/      # Helper functions
-│   └── public/         # Static assets
-└── .env               # Environment variables
-```
+#### Contest Integration
+- External API integration with CLIST
+- Contest wishlist management
+- Ongoing contest tracking
+- Calendar visualization with react-big-calendar
 
 ## API Endpoints
 
@@ -232,17 +175,9 @@ Aura_Connect/
 - Graceful fallbacks for API failures
 - User-friendly error displays
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the ISC License.
-
 ## Author
 
-Lakshana
+**Lakshana**
 
 ## Acknowledgments
 
