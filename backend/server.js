@@ -26,6 +26,14 @@ if (process.env.NODE_ENV !== "production") {
 			credentials: true,
 		})
 	);
+} else {
+	// Production CORS - allow frontend domain
+	app.use(
+		cors({
+			origin: ["https://aura-connectt.onrender.com"],
+			credentials: true,
+		})
+	);
 }
 
 app.use(express.json({ limit: "5mb" }));
