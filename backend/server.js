@@ -31,6 +31,22 @@ if (process.env.NODE_ENV !== "production") {
 app.use(express.json({ limit: "5mb" }));
 app.use(cookieParser());
 
+// Root route - API health check
+app.get("/", (req, res) => {
+	res.json({
+		message: "🚀 Aura Connect Backend is running",
+		status: "active",
+		endpoints: {
+			auth: "/api/v1/auth",
+			users: "/api/v1/users",
+			posts: "/api/v1/posts",
+			notifications: "/api/v1/notifications",
+			connections: "/api/v1/connections",
+			coding: "/api/v1/coding"
+		}
+	});
+});
+
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRoutes);
