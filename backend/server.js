@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from "url";
 
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
@@ -13,48 +14,38 @@ import codingRoutes from "./routes/coding.route.js";
 
 import { connectDB } from "./lib/db.js";
 
-dotenv.config();
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load environment variables from root directory
+dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const __dirname = path.resolve();
 
+// CORS Configuration
 if (process.env.NODE_ENV !== "production") {
 	app.use(
 		cors({
-			origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
+			origin: ["http://localhost:8080", "http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
 			credentials: true,
 		})
 	);
 } else {
-	// Production CORS - allow frontend domain
 	app.use(
 		cors({
-			origin: ["https://aura-connectt.onrender.com"],
+			origin: process.env.CLIENT_URL || ["https://aura-connectt.onrender.com"],
 			credentials: true,
 		})
 	);
 }
 
+// Middleware
 app.use(express.json({ limit: "5mb" }));
 app.use(cookieParser());
 
-// Root route - API health check
-app.get("/", (req, res) => {
-	res.json({
-		message: "🚀 Aura Connect Backend is running",
-		status: "active",
-		endpoints: {
-			auth: "/api/v1/auth",
-			users: "/api/v1/users",
-			posts: "/api/v1/posts",
-			notifications: "/api/v1/notifications",
-			connections: "/api/v1/connections",
-			coding: "/api/v1/coding"
-		}
-	});
-});
-
+// API Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRoutes);
@@ -62,23 +53,48 @@ app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/connections", connectionRoutes);
 app.use("/api/v1/coding", codingRoutes);
 
+// Serve frontend in production
 if (process.env.NODE_ENV === "production") {
-	app.use(express.static(path.join(__dirname, "/frontend/dist")));
+	const frontendDistPath = path.join(__dirname, "..", "frontend", "dist");
+	app.use(express.static(frontendDistPath));
 
 	app.get("*", (req, res) => {
-		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+		res.sendFile(path.join(frontendDistPath, "index.html"));
+	});
+} else {
+	// Root route - API health check (development only)
+	app.get("/", (req, res) => {
+		res.json({
+			message: "🚀 Aura Connect Backend is running",
+			status: "active",
+			environment: process.env.NODE_ENV,
+			endpoints: {
+				auth: "/api/v1/auth",
+				users: "/api/v1/users",
+				posts: "/api/v1/posts",
+				notifications: "/api/v1/notifications",
+				connections: "/api/v1/connections",
+				coding: "/api/v1/coding"
+			}
+		});
 	});
 }
 
+// Start server
 const startServer = async () => {
 	try {
 		await connectDB();
-		console.log("Database connected successfully");
+		console.log("✅ Database connected successfully");
 		app.listen(PORT, () => {
-			console.log(`Server is listening on PORT ${PORT}`);
+			console.log(`🚀 Server is running on port ${PORT}`);
+			console.log(`📍 Environment: ${process.env.NODE_ENV}`);
+			if (process.env.NODE_ENV === "production") {
+				console.log(`📦 Serving frontend from: ${path.join(__dirname, "..", "frontend", "dist")}`);
+			}
 		});
 	} catch (error) {
-		console.error("Failed to start the server:", error.message);
+		console.error("❌ Failed to start the server:", error.message);
+		process.exit(1);
 	}
 };
 
