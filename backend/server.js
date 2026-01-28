@@ -56,8 +56,21 @@ app.use("/api/v1/coding", codingRoutes);
 // Serve frontend in production
 if (process.env.NODE_ENV === "production") {
 	const frontendDistPath = path.join(__dirname, "..", "frontend", "dist");
-	app.use(express.static(frontendDistPath));
+	
+	// Serve static files with proper MIME types and caching
+	app.use(express.static(frontendDistPath, {
+		maxAge: '1d',
+		etag: true,
+		setHeaders: (res, filePath) => {
+			if (filePath.endsWith('.css')) {
+				res.setHeader('Content-Type', 'text/css');
+			} else if (filePath.endsWith('.js')) {
+				res.setHeader('Content-Type', 'application/javascript');
+			}
+		}
+	}));
 
+	// Catch-all route for SPA - must be after static files
 	app.get("*", (req, res) => {
 		res.sendFile(path.join(frontendDistPath, "index.html"));
 	});
