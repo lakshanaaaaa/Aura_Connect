@@ -1,5 +1,7 @@
 # Aura Connect - LinkedIn Clone
 
+![CI Pipeline](https://github.com/lakshanaaaaa/Aura_Connect/actions/workflows/ci.yml/badge.svg)
+
 A full-stack social networking application built with the MERN stack (MongoDB, Express, React, Node.js).
 
 ## Features
@@ -152,5 +154,3 @@ ISC
 ## Author
 
 Your Name
-
-# Testing CI/CD
