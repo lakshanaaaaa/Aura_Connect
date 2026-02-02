@@ -232,7 +232,7 @@ jobs:
         env:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_CHANNEL: '#auro-connect'
+          SLACK_CHANNEL: '#all-aura-connect'
           GITHUB_CONTEXT: ${{ toJson(github) }}
           SETUP_RESULT: ${{ needs.setup.outputs.setup-result }}
           LINT_RESULT: ${{ needs.lint.outputs.lint-result }}

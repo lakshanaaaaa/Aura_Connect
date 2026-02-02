@@ -234,7 +234,7 @@ echo "🔍 Checking Slack configuration..."
 if [ -n "$SLACK_TOKEN" ]; then
   echo "✅ SLACK_TOKEN is configured"
   # Use same channel as CI workflow
-  SLACK_CHANNEL="${SLACK_CHANNEL:-#auro-connect}"
+  SLACK_CHANNEL="${SLACK_CHANNEL:-#all-aura-connect}"
   
   echo "📤 Sending notification via Slack Bot API to $SLACK_CHANNEL..."
   
