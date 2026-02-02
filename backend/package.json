@@ -5,7 +5,9 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "echo \"No tests configured yet\" && exit 0",
+    "lint": "echo \"No linting configured yet\" && exit 0"
   },
   "keywords": [
     "express",
